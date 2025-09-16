@@ -20,6 +20,191 @@ include "koneksi.php";
 
       <!--=============== CSS ===============-->
       <link rel="stylesheet" href="assets/css/styles.css">
+      <style>
+         .cart-user-form {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.cart-user-form h4 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.cart-input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+}
+
+.cart-input:focus {
+    outline: none;
+    border-color: #8B4513;
+    box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.1);
+}
+
+.cart-input::placeholder {
+    color: #999;
+}
+
+textarea.cart-input {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.cart-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.cart-clear,
+.cart-checkout {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-align: center;
+}
+
+.cart-clear {
+    background-color: #ff4757;
+    color: white;
+}
+
+.cart-clear:hover {
+    background-color: #ff3838;
+    transform: translateY(-2px);
+}
+
+.cart-checkout {
+    background-color: #8B4513;
+    color: white;
+    border: none;
+}
+
+.cart-checkout:hover {
+    background-color: #7a3d0f;
+    transform: translateY(-2px);
+}
+
+.cart-checkout:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Alert Messages */
+.alert {
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.alert-error {
+    background-color: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+}
+
+.alert-success {
+    background-color: #efe;
+    color: #363;
+    border: 1px solid #cfc;
+}
+
+/* Cart item styling improvements */
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 8px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.cart-item:hover {
+    background-color: #f5f5f5;
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-name {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.cart-item-price {
+    color: #8B4513;
+    font-weight: 600;
+}
+
+.cart-remove-item {
+    background-color: #ff4757;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cart-remove-item:hover {
+    background-color: #ff3838;
+}
+
+.cart-total {
+    font-size: 18px;
+    font-weight: bold;
+    color: #8B4513;
+    text-align: center;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.cart-empty {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 40px 20px;
+}
+
+/* Responsive */
+@media screen and (max-width: 480px) {
+    .cart-actions {
+        flex-direction: column;
+    }
+    
+    .cart-clear,
+    .cart-checkout {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+      </style>
 
       <title>Responsive coffee website - Bedimcode</title>
    </head>
@@ -73,45 +258,63 @@ include "koneksi.php";
 
          </nav>
       </header>
+         <!--keranjang-->
+         <div class="cart-sidebar" id="cart-sidebar">
+         <div class="cart-header">
+            <h3>Keranjang Saya</h3>
+            <button class="cart-close" id="cart-close">
+               <i class="ri-close-large-line"></i>
+            </button>
+         </div>
+         
+         <div class="cart-content">
+            <div class="cart-items" id="cart-items">
+               <?php
+               $grandTotal = 0;
 
-      <!--keranjang-->
-      <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header">
-          <h3>Keranjang Saya</h3>
-          <button class="cart-close" id="cart-close">
-            <i class="ri-close-large-line"></i>
-          </button>
-        </div>
-        
-        <div class="cart-items" id="cart-items">
-          <?php
-          if (!empty($_SESSION['keranjang'])) {
-              $grandTotal = 0;
-              foreach ($_SESSION['keranjang'] as $id => $item) {
-                  $total = $item['harga'] * $item['qty'];
-                  $grandTotal += $total;
-                  echo "<div class='cart-item' data-id='{$id}'>
-                          <div class='cart-item-info'>
-                            <span class='cart-item-name'>{$item['nama']} ({$item['qty']})</span>
-                            <span class='cart-item-price'>Rp " . number_format($total,0,',','.') . "</span>
-                          </div>
-                          <button class='cart-remove-item' data-id='{$id}'>
-                            <i class='ri-delete-bin-line'></i>
-                          </button>
-                        </div>";
-              }
-              echo "<div class='cart-total'>Total: Rp " . number_format($grandTotal,0,',','.') . "</div>";
-              echo "<div class='cart-actions'>
-                      <button class='cart-clear' id='cart-clear'>Kosongkan Keranjang</button>
-                      <a href='checkout.php' class='cart-checkout'>Checkout</a>
-                    </div>";
-          } else {
-              echo "<p class='cart-empty'>Keranjang kosong.</p>";
-          }
-          ?>
-        </div>
+               if (!empty($_SESSION['keranjang'])) {
+                  foreach ($_SESSION['keranjang'] as $id => $item) {
+                     $total = $item['harga'] * $item['qty'];
+                     $grandTotal += $total;
+                     echo "<div class='cart-item' data-id='{$id}'>
+                              <div class='cart-item-info'>
+                                 <span class='cart-item-name'>{$item['nama']} ({$item['qty']})</span>
+                                 <span class='cart-item-price'>Rp " . number_format($total,0,',','.') . "</span>
+                              </div>
+                              <button class='cart-remove-item' data-id='{$id}'>
+                                 <i class='ri-delete-bin-line'></i>
+                              </button>
+                           </div>";
+                  }
+                  echo "<div class='cart-total'>Total: Rp " . number_format($grandTotal,0,',','.') . "</div>";
+               } else {
+                  echo "<p class='cart-empty'>Keranjang kosong.</p>";
+               }
+               ?>
+            </div>
+
+            <!-- Form checkout selalu kelihatan -->
+            <div class="cart-checkout-form">
+               <form id="checkout-form" action="checkout.php" method="POST" class="cart-user-form">
+               <h4>Data Pelanggan:</h4>
+               <input type="text" name="nama" placeholder="Nama Lengkap*" class="cart-input" required>
+               <input type="email" name="email" placeholder="Email*" class="cart-input" required>
+               <input type="text" name="telepon" placeholder="Nomor Telepon*" class="cart-input" required>
+               <textarea name="alamat" placeholder="Alamat Lengkap*" class="cart-input" required></textarea>
+               
+               <div class="cart-actions">
+                  <button type="button" class="cart-clear" id="cart-clear">Kosongkan Keranjang</button>
+                  
+                  <!-- Tombol submit selalu ada, tapi disable kalau keranjang kosong -->
+                  <button type="submit" class="cart-checkout"
+                     <?php echo empty($_SESSION['keranjang']) ? 'disabled' : ''; ?>>
+                     Buat Pesanan
+                  </button>
+               </div>
+               </form>
+            </div>
+         </div>
       </div>
-
       <!-- Cart Overlay -->
       <div class="cart-overlay" id="cart-overlay"></div>
 
