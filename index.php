@@ -267,11 +267,22 @@ textarea.cart-input {
             </button>
          </div>
          
-         <div class="cart-content">
-            <div class="cart-items" id="cart-items">
-               <?php
+         <!-- Form checkout selalu kelihatan -->
+         <div class="cart-checkout-form">
+            <form id="checkout-form" action="checkout.php" method="POST" class="cart-user-form">
+            <h4>Data Pelanggan:</h4>
+            <input type="text" name="nama" placeholder="Nama Lengkap*" class="cart-input" required>
+            <input type="email" name="email" placeholder="Email*" class="cart-input" required>
+            <input type="text" name="telepon" placeholder="Nomor Telepon*" class="cart-input" required>
+            <textarea name="alamat" placeholder="Alamat Lengkap*" class="cart-input" required></textarea>
+            
+         </form>
+      </div>
+      <div class="cart-content">
+         <div class="cart-items" id="cart-items">
+            <?php
                $grandTotal = 0;
-
+               
                if (!empty($_SESSION['keranjang'])) {
                   foreach ($_SESSION['keranjang'] as $id => $item) {
                      $total = $item['harga'] * $item['qty'];
@@ -280,38 +291,26 @@ textarea.cart-input {
                               <div class='cart-item-info'>
                                  <span class='cart-item-name'>{$item['nama']} ({$item['qty']})</span>
                                  <span class='cart-item-price'>Rp " . number_format($total,0,',','.') . "</span>
-                              </div>
+                                 </div>
                               <button class='cart-remove-item' data-id='{$id}'>
-                                 <i class='ri-delete-bin-line'></i>
+                              <i class='ri-delete-bin-line'></i>
                               </button>
-                           </div>";
-                  }
+                              </div>";
+                           }
                   echo "<div class='cart-total'>Total: Rp " . number_format($grandTotal,0,',','.') . "</div>";
                } else {
                   echo "<p class='cart-empty'>Keranjang kosong.</p>";
                }
                ?>
             </div>
-
-            <!-- Form checkout selalu kelihatan -->
-            <div class="cart-checkout-form">
-               <form id="checkout-form" action="checkout.php" method="POST" class="cart-user-form">
-               <h4>Data Pelanggan:</h4>
-               <input type="text" name="nama" placeholder="Nama Lengkap*" class="cart-input" required>
-               <input type="email" name="email" placeholder="Email*" class="cart-input" required>
-               <input type="text" name="telepon" placeholder="Nomor Telepon*" class="cart-input" required>
-               <textarea name="alamat" placeholder="Alamat Lengkap*" class="cart-input" required></textarea>
+            <div class="cart-actions">
+               <button type="button" class="cart-clear" id="cart-clear">Kosongkan Keranjang</button>
                
-               <div class="cart-actions">
-                  <button type="button" class="cart-clear" id="cart-clear">Kosongkan Keranjang</button>
-                  
-                  <!-- Tombol submit selalu ada, tapi disable kalau keranjang kosong -->
-                  <button type="submit" class="cart-checkout"
-                     <?php echo empty($_SESSION['keranjang']) ? 'disabled' : ''; ?>>
-                     Buat Pesanan
-                  </button>
-               </div>
-               </form>
+               <!-- Tombol submit selalu ada, tapi disable kalau keranjang kosong -->
+               <button type="submit" class="cart-checkout"
+                  <?php echo empty($_SESSION['keranjang']) ? 'disabled' : ''; ?>>
+                  Buat Pesanan
+               </button>
             </div>
          </div>
       </div>
