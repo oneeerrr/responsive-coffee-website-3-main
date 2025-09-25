@@ -9,16 +9,12 @@ include "koneksi.php";
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      <!--=============== FAVICON ===============-->
       <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
 
-      <!--=============== REMIXICONS ===============-->
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
 
-      <!--=============== SWIPER CSS ===============-->
       <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
 
-      <!--=============== CSS ===============-->
       <link rel="stylesheet" href="assets/css/styles.css">
       <style>
          .cart-user-form {
@@ -209,117 +205,130 @@ textarea.cart-input {
       <title>Responsive coffee website - Bedimcode</title>
    </head>
    <body>
-      <!--==================== HEADER ====================-->
       <header class="header" id="header">
-         <nav class="nav container">
-            <a href="#" class="nav__logo">StarBoy</a>
+    <nav class="nav container">
+        <a href="#" class="nav__logo">StarBoy</a>
 
-            <div class="nav__menu" id="nav-menu">
-               <ul class="nav__list">
-                  <li>
-                     <a href="#home" class="nav__link active-link">HOME</a>
-                  </li>
-                  <li>
-                     <a href="#popular" class="nav__link">POPULAR</a>
-                  </li>
-                  <li>
-                     <a href="#about" class="nav__link">ABOUT US</a>
-                  </li>
-                  <li>
-                     <a href="#products" class="nav__link">PRODUCTS</a>
-                  </li>
-                  <li>
-                     <a href="#contact" class="nav__link">CONTACT</a>
-                  </li>
-                  <li>
-                     <a href="#" class="nav__link cart-toggle">
-                     <i class="ri-shopping-cart-2-line"></i>
-                     <span class="cart-count" id="cart-count">
-            <?php 
-              echo isset($_SESSION['keranjang']) 
-                ? array_sum(array_column($_SESSION['keranjang'],'qty')) 
-                : 0; 
-            ?>
-          </span>
-        </a>
-      </li>
-               </ul>
+        <div class="nav__toggle" id="nav-toggle">
+            <i class="ri-menu-5-line"></i>
+        </div>
 
-               <!--close button-->
-               <div class="nav__close" id="nav-close">
-                  <i class="ri-close-large-line"></i>
-               </div>    
-            </div>
+        <div class="nav__menu" id="nav-menu">
+            <ul class="nav__list">
+                <li>
+                    <a href="#home" class="nav__link active-link">HOME</a>
+                </li>
+                <li>
+                    <a href="#popular" class="nav__link">POPULAR</a>
+                </li>
+                <li>
+                    <a href="#about" class="nav__link">ABOUT US</a>
+                </li>
+                <li>
+                    <a href="#products" class="nav__link">PRODUCTS</a>
+                </li>
+                <li>
+                    <a href="#contact" class="nav__link">CONTACT</a>
+                </li>
+                
+                <li>
+                    <a href="#" class="nav__link cart-toggle">
+                        <i class="ri-shopping-cart-2-line"></i>
+                        <span class="cart-count" id="cart-count">
+                            <?php 
+                                echo isset($_SESSION['keranjang']) 
+                                    ? array_sum(array_column($_SESSION['keranjang'],'qty')) 
+                                    : 0; 
+                            ?>
+                        </span>
+                    </a>
+                </li>
+                
+                <?php if (!isset($_SESSION['is_member'])): ?>
+                    <li>
+                        <a href="login.php" class="nav__link">LOGIN BOS?</a>
+                    </li>
+                <?php else: ?>
+                    <li class="nav__user-info">
+                        <span class="nav__link">Hai, <?php echo htmlspecialchars($_SESSION['nama']); ?>!</span>
+                    </li>
+                    <li>
+                        <a href="logout.php" class="nav__link">LOGOUT</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
 
-               <!--toggle button-->
-               <div class="nav__toggle" id="nav-toggle">
-                  <i class="ri-apps-2-fill"></i>
-               </div>
-
-         </nav>
-      </header>
-         <!--keranjang-->
-         <div class="cart-sidebar" id="cart-sidebar">
-         <div class="cart-header">
-            <h3>Keranjang Saya</h3>
-            <button class="cart-close" id="cart-close">
-               <i class="ri-close-large-line"></i>
-            </button>
-         </div>
-         
-         <!-- Form checkout selalu kelihatan -->
-         <div class="cart-checkout-form">
-            <form id="checkout-form" action="checkout.php" method="POST" class="cart-user-form">
+            <div class="nav__close" id="nav-close">
+                <i class="ri-close-large-line"></i>
+            </div>    
+        </div>
+    </nav>
+</header>
+   <div class="cart-sidebar" id="cart-sidebar">
+      <div class="cart-header">
+         <h3>Keranjang Saya</h3>
+         <button class="cart-close" id="cart-close">
+            <i class="ri-close-large-line"></i>
+         </button>
+      </div>
+      <div class="cart-checkout-form">
+         <form id="checkout-form" action="checkout.php" method="POST" class="cart-user-form">
             <h4>Data Pelanggan:</h4>
-            <input type="text" name="nama" placeholder="Nama Lengkap*" class="cart-input" required>
-            <input type="email" name="email" placeholder="Email*" class="cart-input" required>
+            <?php if (isset($_SESSION['is_member']) && $_SESSION['is_member'] === true): ?>
+               <input type="text" name="nama" placeholder="Nama Lengkap*" class="cart-input" value="<?php echo htmlspecialchars($_SESSION['nama']); ?>" required>
+               <input type="email" name="email" placeholder="Email*" class="cart-input" value="<?php echo htmlspecialchars($_SESSION['email']); ?>" required>
+            <?php else: ?>
+               <input type="text" name="nama" placeholder="Nama Lengkap*" class="cart-input" required>
+               <input type="email" name="email" placeholder="Email*" class="cart-input" required>
+            <?php endif; ?>
             <input type="text" name="telepon" placeholder="Nomor Telepon*" class="cart-input" required>
             <textarea name="alamat" placeholder="Alamat Lengkap*" class="cart-input" required></textarea>
-            
+
+            <div class="cart-content">
+               <div class="cart-items" id="cart-items">
+                  <?php
+                  $grandTotal = 0;
+                  if (!empty($_SESSION['keranjang'])) {
+                      foreach ($_SESSION['keranjang'] as $id => $item) {
+                          $total = $item['harga'] * $item['qty'];
+                          $grandTotal += $total;
+                          echo "<div class='cart-item' data-id='{$id}'>
+                                  <div class='cart-item-info'>
+                                    <span class='cart-item-name'>{$item['nama']} ({$item['qty']})</span>
+                                    <span class='cart-item-price'>Rp " . number_format($total,0,',','.') . "</span>
+                                  </div>
+                                </div>";
+                      }
+                      echo "<div class='cart-total'>Total: Rp " . number_format($grandTotal,0,',','.') . "</div>";
+                  } else {
+                      echo "<p class='cart-empty'>Keranjang kosong.</p>";
+                  }
+                  ?>
+               </div>
+               <div class="cart-user-form">
+               <div style="margin-bottom: 1rem;">
+                  <h4>Metode Pembayaran:</h4>
+                  <select name="metode_pembayaran" class="cart-input" required>
+                        <option value="">Pilih Metode Pembayaran</option>
+                        <option value="cash">Cash</option>
+                        <option value="transfer">Transfer</option>
+                  </select>
+               </div>
+
+            </div>
+               <div class="cart-actions">
+                  <button type="button" class="cart-clear" id="cart-clear">Kosongkan Keranjang</button>
+                  <button action="struk.php" type="submit" class="cart-checkout" id="checkout-btn">Buat Pesanan</button>
+               </div>
+            </div>
          </form>
       </div>
-      <div class="cart-content">
-         <div class="cart-items" id="cart-items">
-            <?php
-               $grandTotal = 0;
-               
-               if (!empty($_SESSION['keranjang'])) {
-                  foreach ($_SESSION['keranjang'] as $id => $item) {
-                     $total = $item['harga'] * $item['qty'];
-                     $grandTotal += $total;
-                     echo "<div class='cart-item' data-id='{$id}'>
-                              <div class='cart-item-info'>
-                                 <span class='cart-item-name'>{$item['nama']} ({$item['qty']})</span>
-                                 <span class='cart-item-price'>Rp " . number_format($total,0,',','.') . "</span>
-                                 </div>
-                              <button class='cart-remove-item' data-id='{$id}'>
-                              <i class='ri-delete-bin-line'></i>
-                              </button>
-                              </div>";
-                           }
-                  echo "<div class='cart-total'>Total: Rp " . number_format($grandTotal,0,',','.') . "</div>";
-               } else {
-                  echo "<p class='cart-empty'>Keranjang kosong.</p>";
-               }
-               ?>
-            </div>
-            <div class="cart-actions">
-               <button type="button" class="cart-clear" id="cart-clear">Kosongkan Keranjang</button>
-               
-               <!-- Tombol submit selalu ada, tapi disable kalau keranjang kosong -->
-               <button type="submit" class="cart-checkout"
-                  <?php echo empty($_SESSION['keranjang']) ? 'disabled' : ''; ?>>
-                  Buat Pesanan
-               </button>
-            </div>
-         </div>
-      </div>
-      <!-- Cart Overlay -->
+   </div>
+   <div class="cart-overlay" id="cart-overlay"></div>
+
       <div class="cart-overlay" id="cart-overlay"></div>
 
-      <!--==================== MAIN ====================-->
       <main class="main">
-         <!--==================== HOME ====================-->
          <section class="home section" id="home">
             <div class="home__container container grid">
                <h1 class="home__title">
@@ -349,7 +358,6 @@ textarea.cart-input {
             </div>
          </section>
 
-         <!--==================== POPULAR ====================-->
          <section class="popular section" id="popular">
             <div class="popular__container">
                <h2 class="section__title">POPULAR <br> CREATIONS</h2>
@@ -430,7 +438,6 @@ textarea.cart-input {
             </div>
          </section>
 
-         <!--==================== ABOUT ====================-->
          <section class="about section" id="about">
             <div class="about__container container grid">
                <div class="about__data">
@@ -451,8 +458,7 @@ textarea.cart-input {
             </div>
          </section>
 
-         <!--==================== PRODUCTS ====================-->
-       <?php include "koneksi.php"; ?>
+         <?php include "koneksi.php"; ?>
 <section class="products section" id="products">
    <h2 class="section__title">THE MOST <br> REQUESTED</h2>
 
@@ -498,7 +504,6 @@ textarea.cart-input {
    </div>
 </section>
 
-         <!--==================== CONTACT ====================-->
          <section class="contact section" id="contact">
             <h2 class="section__title">CONTACT US</h2>
 
@@ -562,7 +567,6 @@ textarea.cart-input {
          </section>
       </main>
 
-      <!--==================== FOOTER ====================-->
       <footer class="footer">
          <div class="footer__container container grid">
             <div class="footer__info">
@@ -607,22 +611,18 @@ textarea.cart-input {
          </div>
 
          <span class="footer__copy">
-            &#169; All Rights Reserved By Onerrr
+            © All Rights Reserved By Onerrr
          </span>
       </footer>
 
-      <!--========== SCROLL UP ==========-->
       <a href="#" class="scrollup" id="scroll-up">
          <i class="ri-arrow-up-line"></i>
       </a>
 
-      <!--=============== SCROLLREVEAL ===============-->
       <script src="assets/js/scrollreveal.min.js"></script>
 
-      <!--=============== SWIPER JS ===============-->
       <script src="assets/js/swiper-bundle.min.js"></script>
 
-      <!--=============== MAIN JS ===============-->
       <script src="assets/js/main.js"></script>
    </body>
 </html>

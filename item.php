@@ -40,10 +40,6 @@ try {
         
         if ($itemCount > 0) {
             echo "<div class='cart-total'>Total: Rp " . number_format($grandTotal, 0, ',', '.') . "</div>";
-            echo "<div class='cart-actions'>
-                    <button class='cart-clear' id='cart-clear'>Kosongkan Keranjang</button>
-                    <button class='cart-checkout'>Checkout</button>
-                  </div>";
             
             error_log("Cart displayed: $itemCount items, total: $grandTotal");
         } else {

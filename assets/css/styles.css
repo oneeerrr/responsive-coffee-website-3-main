@@ -955,6 +955,7 @@ img {
   font-size: var(--small-font-size);
 }
 
+
 /*=============== SCROLL BAR ===============*/
 ::-webkit-scrollbar{
   background-color: hsl(166, 20%, 30%);
