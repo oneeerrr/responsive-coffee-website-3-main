@@ -69,7 +69,6 @@
                 <button type="submit" class="login-button">Login</button>
             </form>
             <a href="register.php" class="login-link">Belum punya akun? Daftar di sini.</a>
-        </div>
     </div>
 </body>
 </html>

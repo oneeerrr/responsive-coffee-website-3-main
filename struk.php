@@ -205,10 +205,14 @@ unset($_SESSION['receipt_data']);
 
             <?php if ($metode_pembayaran == 'transfer'): ?>
                 <div class="qr-code-container">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ContohDataTransfer_<?php echo $id_pesanan; ?>_<?php echo $grandTotal; ?>" 
+                    <h3>QR Code Pembayaran</h3>
+                    <p>Silakan pindai kode QR ini untuk menyelesaikan pembayaran:</p>
+                    <img src="assets/img/pembayaran_qrcode.png" <?php echo $id_pesanan; ?>_<?php echo $grandTotal; ?>
                          alt="QR Code Pembayaran" style="width: 150px; height: 150px;">
                     <p style="font-size: 0.8rem; margin-top: 10px;">
                         **Pastikan total pembayaran sesuai: Rp <?php echo number_format($grandTotal, 0, ',', '.'); ?>**
+                        <br>
+                        (Ganti URL QR Code dengan data bank Anda)
                     </p>
                 </div>
             <?php endif; ?>
